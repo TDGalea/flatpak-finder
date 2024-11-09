@@ -10,18 +10,29 @@ esac
 # No app specified.
 [[ -z $1 ]]&& printf "Specify an app to $mode.\n" >&2 && exit 2
 
-# Search for the specified flatpak and ensure we have only one result.
-found="$(flatpak list | sed "s/\t/\n/g" | grep \.$1)"
-count="$(echo "$found" | wc -w)"
-[[ $count -lt 1 ]] && printf "No results found. Check spelling and case, and remember we're looking for the \e[1mApplication ID\e[0m, not the \e[1mName\e[0m.\n" >&2 && exit 1
-[[ $count -gt 1 ]] && printf "Too many results found. Please be a bit more specific:\n" >&2 && printf "$found\n" >&2 && exit 2
+# Put the search string in $search, put the rest of the arguments in $args.
+search=$1
 shift
-printf "Found '$found'"
+args="$@"
+
+# Generate a list of all Flatpaks found by the given string, and then check how many results we have.
+list="$(flatpak list | sed "s/\t/THIS_IS_A_TAB/g" | grep $search)"
+count="$(printf "$list\n" | wc -l)"
+
+# Make sure we have only one result.
+[[ $count -gt 1 ]] && printf "Too many results found. Please be a bit more specific:\n" >&2 && printf "$list\n" | sed "s/THIS_IS_A_TAB/\t/g" | column -t >&2 && exit 2
+
+# Annoyingly, WC is resulting in 1 even if we got ZERO results. So let's just try and fill appID and check that instead.
+appID="$(echo $list | sed "s/THIS_IS_A_TAB/\n/g" | tail -4 | head -1)"
+
+# Do we actually have an appID?
+[[ "$appID" == "" ]] && printf "No results found. Please check spelling and case.\n" >&2 && exit 2
+printf "Found '$appID'"
 
 # Complain if overriding and no instructions provided.
-[[ "$mode" == "override" ]] && [[ -z "$@" ]] && printf " - what do you want to do with it?\n" && exit 2
+[[ "$mode" == "override" ]] && [[ -z "$args" ]] && printf " - what do you want to do with it?\n" && exit 2
 
 # Run or override the found flatpak.
 printf ".\n"
-flatpak $mode "$found" $@
+flatpak $mode "$appID" $@
 exit $?
