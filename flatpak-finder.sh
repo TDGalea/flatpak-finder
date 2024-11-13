@@ -1,4 +1,10 @@
 #!/bin/bash
+# flatpak-finder: Script that allows you to specify any part of a Flatpak name/appID rather than the full thing.
+# Needs to be named (or symlinked) to contain "fpr" and/or "fpo" in the name, for "flatpak run" and/or "flatpak override" respectively.
+# Created by TDGalea, last updated 2024-11-13 01:25 (and now to run to sleep).
+#
+# Huge thanks to Honest_Photograph519 on Reddit for the FAR better searching method - I really need to get into arrays more.
+
 shopt -s nocasematch
 
 # Figure out what we're doing by how we were called. This script should be symlinked/renamed to "fpr" to run, "rpo" to override.
