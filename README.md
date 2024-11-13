@@ -9,36 +9,35 @@ sudo ln -s /scripts/flatpak-finder.sh /usr/bin/fpr
 sudo ln -s /scripts/flatpak-finder.sh /usr/bin/fpo
 ```
 
-Let's say we want to launch Minecraft Bedrock Launcher. `fpr` stands for "FlatPak Run" so that's the command we'll use.
+Let's say we want to launch Moonlight. `fpr` stands for "FlatPak Run" so that's the command we'll use.
 If we find this via `flatpak list`, we see:
 ```
-Name                          Application ID           Version   Branch    Installation
-Minecraft Bedrock Launcher    io.mrarm.mcpelauncher    v1.1.1    stable    system
+Name             Application ID                    Version  Branch    Origin     Installation
+Moonlight        com.moonlight_stream.Moonlight    6.1.0    stable    flathub    system
 ```
 
-This script allows you to find the Flatpak you want by searching for any part of its line. So you could try any of the following:
+This script allows you to find the Flatpak you want by searching for any part of its Name or Application ID. It is _not_ case sensitive.
+So you could try any of the following:
 ```
-fpr Minecraft
-fpr Bedrock
-fpr Bed
-fpr mcpe
-fpr mrarm
+fpr Moonlight
+fpr moon
+fpr stream
+fpr light
+fpr mo
 ```
-If you're extra weird, even `fpr v1.1.1` will work.
-The important thing is that whatever you type must be detailed enough to find only one result. If you give it something that matches multiple Flatpaks, it'll tell you and show you the list:
-```
-$ fpr com.
-Too many results found. Please be a bit more specific:
-Moonlight                         com.moonlight_stream.Moonlight    6.0.1        stable    system                                
-OBS Studio                        com.obsproject.Studio             30.2.3       stable    system           
-Thincast Remote Desktop Client    com.thincast.client               1.1.560      stable    system
-Bottles                           com.usebottles.bottles            51.13        stable    system                                
-Steam Link                        com.valvesoftware.SteamLink       1.3.9.258    stable    system
-```
+
+If your given name matches multiple results, the script will go interactive if it can, and allow you to select from a list of found Flatpaks.
+If $TERM is "dumb" (i.e. you're calling this from outside a terminal) the script will try to send a notification to inform you that there are too many results.
+
+For example, if I try `fpr mo`, I receive the following results in a list:
+![image](https://github.com/user-attachments/assets/1350c11e-dc51-4fbd-ae6c-8e8ecc3fe166)
+
+However if I try to do this in KRunner (or outside of a terminal in general) then I receive the following notification via notify-send:
+![image](https://github.com/user-attachments/assets/fd0a41dc-9646-463b-8f74-c640d3752276)
+
 
 
 In the case of wanting to override settings for a Flatpak, use `fpo` in the same manner, adding your override arguments to the end. For example:
 ```
-fpo Minecraft --filesystem=~/Pictures
+fpo Moonlight --filesystem=~/Pictures
 ```
-fpr moonlight
